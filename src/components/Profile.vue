@@ -14,27 +14,26 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
   data() {
     return {
       fullName: '',
       age: ''
     }
   },
-  computed: {
-    ...mapState(['currentUser'])
-  },
   mounted() {
     this.fullName = this.currentUser.fullName
     this.age = this.currentUser.age
   },
   methods: {
-    ...mapMutations(['setCurrentUser']),
     ...mapActions(['saveCurrentUser']),
     save() {
-      this.setCurrentUser({ ...this.currentUser, fullName: this.fullName, age: this.age })
+      this.$store.commit('setCurrentUser', { ...this.currentUser, fullName: this.fullName, age: this.age })
       this.saveCurrentUser().then(() => alert('Сохранено'))
     }
   }

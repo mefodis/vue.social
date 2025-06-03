@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Profile from './Profile.vue'
 import UsersList from './UsersList.vue'
 
@@ -78,15 +78,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currentUser', 'users'])
+    ...mapGetters(['currentUser'])
   },
   methods: {
-    ...mapMutations(['setCurrentUser']),
-    ...mapActions(['fetchUsers']),
+    ...mapActions(['fetchUsers', 'saveCurrentUser']),
     login() {
-      const user = this.users.find(u => u.fullName === this.loginName)
+      const user = this.$store.state.users.find(u => u.fullName === this.loginName)
       if (user) {
-        this.setCurrentUser(user)
+        this.$store.commit('setCurrentUser', user)
         this.showLogin = false
       } else {
         alert('Пользователь не найден')
@@ -100,13 +99,13 @@ export default {
         friends: []
       }
       this.$axios.post('http://localhost:3000/users', newUser).then(() => {
-        this.setCurrentUser(newUser)
+        this.$store.commit('setCurrentUser', newUser)
         this.fetchUsers()
         this.showRegister = false
       })
     },
     logout() {
-      this.setCurrentUser(null)
+      this.$store.commit('setCurrentUser', null)
       this.showProfile = false
     }
   },

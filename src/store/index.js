@@ -34,5 +34,9 @@ export default new Vuex.Store({
     saveCurrentUser({ state }) {
       return axios.patch(`http://localhost:3000/users/${state.currentUser.id}`, state.currentUser)
     }
+  },
+  getters: {
+    currentUser: state => state.currentUser,
+    users: state => state.users.filter(u => !state.currentUser || u.id !== state.currentUser.id)
   }
 })
